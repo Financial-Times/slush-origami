@@ -1,7 +1,7 @@
 {
-  "name": "slush-origami",
+  "name": "@financial-times/slush-origami",
+  "version": "0.0.0",
   "description": "Slush generator for rapidly scaffolding Origami components",
-  "version": "0.1.0",
   "homepage": "https://github.com/ft-interactive/slush-origami",
   "author": {
     "name": "Ændrew Rininsland",

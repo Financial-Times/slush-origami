@@ -1,14 +1,13 @@
 machine:
   node:
     version: 6
-  post:
-    - npm install -g Financial-Times/origami-build-tools
 dependencies:
-  override:
-    - obt install
-  cache_directories:
-    - "node_modules"
-test:
-  override:
-    - obt test
-    - obt verify
+  pre:
+    - echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" > ${HOME}/.npmrc
+deployment:
+  release:
+    tag: /v.*/
+    owner: Financial-Times
+    commands:
+      - npm-prepublish --verbose
+      - npm publish --access public
