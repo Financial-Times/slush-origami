@@ -1,4 +1,4 @@
-# Slush Origami [![Build Status](https://secure.travis-ci.org/ft-interactive/slush-origami.png?branch=master)](https://travis-ci.org/ft-interactive/slush-origami) [![NPM version](https://badge-me.herokuapp.com/api/npm/slush-origami.png)](http://badges.enytc.com/for/npm/slush-origami)
+# Slush Origami [![Build status](https://circleci.com/gh/ft-interactive/slush-origami.svg?style=svg)](https://circleci.com/gh/ft-interactive/slush-origami)
 
 > Slush generator for rapidly scaffolding Origami components
 
