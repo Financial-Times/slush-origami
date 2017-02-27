@@ -7,7 +7,7 @@ dependencies:
 deployment:
   release:
     tag: /v.*/
-    owner: ft-interactive
+    owner: financial-times
     commands:
       - npm-prepublish --verbose
       - npm publish --access public

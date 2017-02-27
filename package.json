@@ -2,17 +2,17 @@
   "name": "@financial-times/slush-origami",
   "version": "0.0.0",
   "description": "Slush generator for rapidly scaffolding Origami components",
-  "homepage": "https://github.com/ft-interactive/slush-origami",
+  "homepage": "https://github.com/financial-times/slush-origami",
   "author": {
     "name": "Ændrew Rininsland",
     "email": "andrew.rininsland@ft.com"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/ft-interactive/slush-origami.git"
+    "url": "git://github.com/financial-times/slush-origami.git"
   },
   "bugs": {
-    "url": "https://github.com/ft-interactive/slush-origami/issues"
+    "url": "https://github.com/financial-times/slush-origami/issues"
   },
   "license": "MIT",
   "main": "slushfile.js",

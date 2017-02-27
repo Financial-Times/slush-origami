@@ -1,6 +1,6 @@
 /*
 * slush-origami
-* https://github.com/ft-interactive/slush-origami
+* https://github.com/financial-times/slush-origami
 *
 * Copyright (c) 2017, Ændrew Rininsland, Financial Times
 * Licensed under the MIT license.

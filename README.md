@@ -1,4 +1,4 @@
-# Slush Origami [![Build status](https://circleci.com/gh/ft-interactive/slush-origami.svg?style=svg)](https://circleci.com/gh/ft-interactive/slush-origami)
+# Slush Origami [![Build status](https://circleci.com/gh/financial-times/slush-origami.svg?style=svg)](https://circleci.com/gh/financial-times/slush-origami)
 
 > Slush generator for rapidly scaffolding Origami components
 
