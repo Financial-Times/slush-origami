@@ -1,40 +1,41 @@
 {
-	"name": "slush-origami",
-	"description": "Slush generator for rapidly scaffolding Origami components",
-	"version": "0.1.0",
-	"homepage": "https://github.com/ft-interactive/slush-origami",
-	"author": {
-		"name": "Ændrew Rininsland",
-		"email": "andrew.rininsland@ft.com"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git://github.com/aendrew/slush-origami.git"
-	},
-	"bugs": {
-		"url": "https://github.com/aendrew/slush-origami/issues"
-	},
-	"license": "MIT",
-	"main": "slushfile.js",
-	"engines": {
-		"node": ">= 0.10.26",
-		"npm": ">=1.4.3"
-	},
-	"scripts": {
-		"test": "echo \"No tests\""
-	},
-	"dependencies": {
-		"slush": ">=1.0.0",
-		"gulp": "^3.6.2",
-		"gulp-template": "^0.1.1",
-		"gulp-install": "^0.1.4",
-		"gulp-conflict": "^0.1.1",
-		"gulp-rename": "^1.2.0",
-		"underscore.string": "^2.3.3",
-		"inquirer": "^0.8.0",
-		"iniparser": "^1.0.5"
-	},
-	"keywords": [
-		"slushgenerator"
-	]
+  "name": "slush-origami",
+  "description": "Slush generator for rapidly scaffolding Origami components",
+  "version": "0.1.0",
+  "homepage": "https://github.com/ft-interactive/slush-origami",
+  "author": {
+    "name": "Ændrew Rininsland",
+    "email": "andrew.rininsland@ft.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/aendrew/slush-origami.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aendrew/slush-origami/issues"
+  },
+  "license": "MIT",
+  "main": "slushfile.js",
+  "engines": {
+    "node": ">= 0.10.26",
+    "npm": ">=1.4.3"
+  },
+  "scripts": {
+    "test": "echo \"No tests\""
+  },
+  "dependencies": {
+    "axios": "^0.15.3",
+    "gulp": "^3.6.2",
+    "gulp-conflict": "^0.1.1",
+    "gulp-install": "^0.1.4",
+    "gulp-rename": "^1.2.0",
+    "gulp-template": "^0.1.1",
+    "iniparser": "^1.0.5",
+    "inquirer": "^3.0.5",
+    "lodash": "^4.17.4",
+    "slush": ">=1.0.0"
+  },
+  "keywords": [
+    "slushgenerator"
+  ]
 }

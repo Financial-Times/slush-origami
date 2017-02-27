@@ -1,7 +1,7 @@
-<% if (useBabel) { %>import <% _.camelCase(componentName) %> from './src/js/<% _.lowerCase(componentName) %>';
+<% if (useBabel) { %>import <%= _.camelCase(componentName) %> from './src/js/<%= _.lowerCase(componentName) %>';
 
 const constructAll = () => {
-  const <% _.camelCase(componentName) %>Components = document.querySelectorAll('.<% _.kebabCase(componentName) %>');
+  const <%= _.camelCase(componentName) %>Components = document.querySelectorAll('.<%= _.kebabCase(componentName) %>');
 
 	// Constructor code here
 
@@ -11,10 +11,10 @@ const constructAll = () => {
 document.addEventListener('o.DOMContentLoaded', constructAll);
 
 export { constructAll as init };
-export default <% _.camelCase(componentName) %>;<% } else { %>var <% _.camelCase(componentName) %> = require('./src/js/<% _.lowerCase(componentName) %>');
+export default <%= _.camelCase(componentName) %>;<% } else { %>var <%= _.camelCase(componentName) %> = require('./src/js/<%= _.lowerCase(componentName) %>');
 
 var constructAll = function() {
-  var <% _.camelCase(componentName) %>Components = document.querySelectorAll('.<% _.kebabCase(componentName) %>');
+  var <%= _.camelCase(componentName) %>Components = document.querySelectorAll('.<%= _.kebabCase(componentName) %>');
 
 	// Constructor code here
 
@@ -23,5 +23,5 @@ var constructAll = function() {
 
 document.addEventListener('o.DOMContentLoaded', constructAll);
 
-module.exports.default = <% _.camelCase(componentName) %>;
+module.exports.default = <%= _.camelCase(componentName) %>;
 module.exports.init = constructAll;<% } %>

@@ -3,12 +3,12 @@
  */
 
 import chai from 'chai';
-import <% _.camelCase(componentName) %> from '../main';
+import <%= _.camelCase(componentName) %> from '../main';
 
 const should = chai.should();
 
 describe(('<%= componentName %>'), () => {
 	it('should exist', () => {
-		should.exist(<% _.camelCase(componentName) %>);
+		should.exist(<%= _.camelCase(componentName) %>);
 	});
 });

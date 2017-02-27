@@ -5,7 +5,7 @@
     "tests",
     ".gitignore",
     ".travis.yml",
-    "circle.yml",
+    "circle.yml"
   ],
   "dependencies": {}
 }

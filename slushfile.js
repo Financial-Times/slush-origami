@@ -11,9 +11,10 @@ const install = require('gulp-install');
 const conflict = require('gulp-conflict');
 const template = require('gulp-template');
 const rename = require('gulp-rename');
-const _ = require('underscore.string');
 const inquirer = require('inquirer');
 const path = require('path');
+const axios = require('axios');
+const _ = require('lodash/string');
 
 function format(string) {
 	const username = string.toLowerCase();
@@ -22,7 +23,6 @@ function format(string) {
 
 const defaults = (function () {
 	const workingDirName = path.basename(process.cwd());
-	const configFile = path.join(homeDir, '.gitconfig');
 	let homeDir;
 	let osUserName;
 	let user;
@@ -34,6 +34,8 @@ const defaults = (function () {
 		homeDir = process.env.HOME || process.env.HOMEPATH;
 		osUserName = homeDir && homeDir.split('/').pop() || 'root';
 	}
+
+	const configFile = path.join(homeDir, '.gitconfig');
 
 	user = {};
 
@@ -63,8 +65,8 @@ gulp.task('default', function (done) {
 		default: defaults.repoUrl,
 	},{
 		name: 'componentDescription',
-		message: `What does this component do? Complete the following sentence:
-		"This is an Origami component..."`,
+		message: `What does this component do? Complete the following sentence:\n`
+		+ `"This is an Origami component..."`,
 		filter: v => v.replace(/\.$/, ''), // Remove trailing periods
 	}, {
 		name: 'componentType',
@@ -84,6 +86,10 @@ gulp.task('default', function (done) {
 		name: 'componentVersion',
 		message: 'What is the version of your component?',
 		default: '0.1.0',
+	}, {
+		name: 'issuesUrl',
+		message: 'What is the support/issues URL?',
+		default: defaults.issuesUrl,
 	}, {
 		name: 'supportStatus',
 		message: 'What is the current support status?',
@@ -111,9 +117,25 @@ gulp.task('default', function (done) {
 		message: 'What is the CircleCI URL?',
 		default: defaults.ciUrl,
 	}, {
-		name: 'browserFeatures',
-		message: 'Please provide a comma-separated list of browser features to polyfill',
-		default: '',
+		name: 'browserFeaturesRequired',
+		message: 'Please choose which browser features are *REQUIRED* from Polyfill.io\n``',
+		type: 'checkbox',
+		choices: () => axios.get('https://cdn.polyfill.io/v2/assets/compat.json')
+			.then(results => [
+				'default-3.6',
+				new inquirer.Separator(),
+				...Object.keys(results.data),
+			]),
+	}, {
+ 	name: 'browserFeaturesOptional',
+ 	message: 'Please choose which browser features are *OPTIONAL* from Polyfill.io\n``',
+ 	type: 'checkbox',
+	 	choices: () => axios.get('https://cdn.polyfill.io/v2/assets/compat.json')
+	 		.then(results => [
+				'default-3.6',
+				new inquirer.Separator(),
+				...Object.keys(results.data),
+			]),
 	}, {
 		name: 'hasSass',
 		message: 'Does your component need Sass?',
@@ -125,10 +147,25 @@ gulp.task('default', function (done) {
 		default: true,
 		type: 'confirm',
 	}, {
+		name: 'useBabel',
+		message: 'Do you want to use ES2015 via Babel?',
+		type: 'confirm',
+		default: true,
+		when: ({ hasJs }) => hasJs,
+	}, {
 		name: 'hasMarkup',
 		message: 'Does your component need markup?',
 		default: true,
 		type: 'confirm',
+	}, {
+		name: 'markupLang',
+		message: 'Which markup dialect do you want to use for examples?',
+		type: 'list',
+		choices: [
+			'Nunjucks',
+			'Handlebars',
+		],
+		when: ({ hasMarkup }) => hasMarkup,
 	}, {
 		name: 'authorName',
 		message: 'What is the your name?',
@@ -150,81 +187,58 @@ gulp.task('default', function (done) {
 			'Blue. No yel-- Auuuuuuuugh!',
 			'This is silly.',
 		],
+	}, {
+		type: 'confirm',
+		name: 'moveon',
+		message: 'Continue?',
+		default: true,
 	}];
 
-	const jsQuestions = [
-		{
-			name: 'useBabel',
-			message: 'Do you want to use ES2015 via Babel?',
-			type: 'confirm',
-			default: true,
-		},
-	];
-
-	const markupQuestions = [
-		{
-			name: 'markupLang',
-			message: 'Which markup dialect do you want to use for examples?',
-			type: 'list',
-			choices: [
-				'Nunjucks',
-				'Handlebars',
-			],
-		},
-	];
-
 	const handleAnswers = answers => {
-		const markupAnswers = answers.hasMarkup || inquirer.prompt(markupQuestions);
-		const jsAnswers = answers.hasJs || inquirer.prompt(jsQuestions);
+		if (!answers.moveon) {
+			return done();
+		}
 
-		return Promise.all([markupAnswers, jsAnswers]).then(([markupAnswers, jsAnswers] )=> {
-			return inquirer.prompt({
-				type: 'confirm',
-				name: 'moveon',
-				message: 'Continue?',
-				default: true,
-			}).then(moveon => {
-				if (!moveon) {
-					return done();
-				}
+		if (!answers.componentName.match(/^[a-z]-[a-z-]+?[a-z]$/)) {
+			console.log('Invalid component name!');
+			console.log('Should match regex: /^[a-z]-[a-z-]+?[a-z]$/');
+			console.log('That is, something like...');
+			console.log('* o-grid');
+			console.log('* n-ui');
+			console.log('* g-audio');
+			console.log(`You supplied: ${answers.componentName}`);
+			console.log('Please re-run generator, supplying an appropriate name!');
+			return done();
+		}
 
-				if (!answers.componentName.match(/^[a-z]-[a-z-]+?[a-z]$/)) {
-					console.log('Invalid component name!');
-					console.log('Should match regex: /^[a-z]-[a-z-]+?[a-z]$/');
-					console.log('That is, something like...');
-					console.log('* o-grid');
-					console.log('* n-ui');
-					console.log('* g-audio');
-					console.log(`You supplied: ${answers.componentName}`);
-					console.log('Please re-run generator, supplying an appropriate name!');
-					return done();
-				}
-
-				gulp.src(__dirname + '/templates/**')
-				.pipe(template([...answers, ...markupAnswers, ...jsAnswers]))
-				.pipe(rename(function (file) {
-					if (file.basename[0] === '_') { // Hidden files
-						file.basename = '.' + file.basename.slice(1);
-					} else if (file.basename === 'component.scss') { // Sass partial
-						file.basename = `${answers.componentName}.scss`;
-					} else if (file.basename === 'component.js') {
-						file.basename = `${answers.componentName}.js`;
-					} else if (file.basename === 'component.spec.js') {
-						file.basename = `${answers.componentName}.spec.js`;
-					} else if (file.basename === 'package_json') { // package.json so Atom stops complaining
-						file.basename = 'package.json';
-					}
-				}))
-				.pipe(conflict('./'))
-				.pipe(gulp.dest('./'))
-				.pipe(install())
-				.on('end', function () {
-					done();
-				});
-			});
+		gulp.src(__dirname + '/templates/**')
+		.pipe(template(answers, {
+			imports: {
+				_,
+			},
+		}))
+		.pipe(rename(function (file) {
+			if (file.basename[0] === '_') { // Hidden files
+				file.basename = '.' + file.basename.slice(1);
+			} else if (file.basename === 'component.scss') { // Sass partial
+				file.basename = `${answers.componentName}.scss`;
+			} else if (file.basename === 'component.js') { // Main JS file
+				file.basename = `${answers.componentName}.js`;
+			} else if (file.basename === 'component.spec.js') { // Main JS spec file
+				file.basename = `${answers.componentName}.spec.js`;
+			} else if (file.basename === 'package_json') { // package.json so Atom stops complaining
+				file.basename = 'package.json';
+			}
+		}))
+		.pipe(conflict('./'))
+		.pipe(gulp.dest('./'))
+		.pipe(install())
+		.on('end', function () {
+			done();
 		});
 	};
 
 	//Ask
-	inquirer.prompt(prompts, handleAnswers);
+	inquirer.prompt(prompts)
+		.then(handleAnswers);
 });
