@@ -9,10 +9,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/aendrew/slush-origami.git"
+    "url": "git://github.com/ft-interactive/slush-origami.git"
   },
   "bugs": {
-    "url": "https://github.com/aendrew/slush-origami/issues"
+    "url": "https://github.com/ft-interactive/slush-origami/issues"
   },
   "license": "MIT",
   "main": "slushfile.js",
