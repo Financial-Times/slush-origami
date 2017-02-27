@@ -37,5 +37,8 @@
   },
   "keywords": [
     "slushgenerator"
-  ]
+  ],
+  "devDependencies": {
+    "npm-prepublish": "^1.2.2"
+  }
 }
