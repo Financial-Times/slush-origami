@@ -1,0 +1,11 @@
+{
+  "name": "<%= componentName %>",
+  "main": ["main.js", "main.scss"],
+  "ignore": [
+    "tests",
+    ".gitignore",
+    ".travis.yml",
+    "circle.yml",
+  ],
+  "dependencies": {}
+}
