@@ -7,6 +7,7 @@
 */
 
 const gulp = require('gulp');
+const filter = require('gulp-filter');
 const install = require('gulp-install');
 const conflict = require('gulp-conflict');
 const template = require('gulp-template');
@@ -147,11 +148,24 @@ gulp.task('default', function (done) {
 		default: true,
 		type: 'confirm',
 	}, {
-		name: 'useBabel',
-		message: 'Do you want to use ES2015 via Babel?',
-		type: 'confirm',
-		default: true,
+		name: 'transpiler',
+		message: 'Which transpiler do you want to use?',
+		type: 'list',
+		choices: [
+			'Babel',
+			// 'TypeScript', // @TODO add TypeScript support
+		],
+		default: 'babel',
 		when: ({ hasJs }) => hasJs,
+	}, {
+		name: 'assertions',
+		message: 'Which assertion library do you want to use?',
+		type: 'list',
+		default: 'Proclaim',
+		choices: [
+			'Chai',
+			'Proclaim',
+		],
 	}, {
 		name: 'hasMarkup',
 		message: 'Does your component need markup?',
@@ -178,15 +192,6 @@ gulp.task('default', function (done) {
 		name: 'userName',
 		message: 'What is the github username?',
 		default: defaults.userName,
-	}, {
-		name: 'favColor', // @TODO record this somewhere for teh lulz.
-		message: 'What is your favourite colour?!',
-		type: 'list',
-		choices: [
-			'Blue!',
-			'Blue. No yel-- Auuuuuuuugh!',
-			'This is silly.',
-		],
 	}, {
 		type: 'confirm',
 		name: 'moveon',
@@ -216,6 +221,14 @@ gulp.task('default', function (done) {
 			imports: {
 				_,
 			},
+		}))
+		.pipe(filter(file => {
+			// Filter tests
+			if (answers.assertions && file.basename.indexOf('.spec.') > -1) {
+				return file.basename.indexOf(answers.assertions.toLowerCase()) > -1;
+			} else if (!answers.assertions && file.path.indexOf('/test/') > -1) {
+				return false;
+			}
 		}))
 		.pipe(rename(function (file) {
 			if (file.basename[0] === '_') { // Hidden files

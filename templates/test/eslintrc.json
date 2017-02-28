@@ -1,5 +1,7 @@
 {
 	"env": {
-		"mocha": true
+		"mocha": true,
+		"sinon": true<% if (assertions === 'proclaim') { %>,
+		"proclaim": true<% } %>
 	}
 }

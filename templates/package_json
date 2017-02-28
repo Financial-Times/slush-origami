@@ -1,12 +1,15 @@
 {
 	"private": true,
 	"devDependencies": {
-<% if (useBabel) { %>		"babel-preset-latest": "^6.22.0",
+<% if (transpiler === 'Babel') { %>		"babel-preset-latest": "^6.22.0",
 		"babelify": "^7.3.0",
 <% } %>		"browserify": "^13.1.1",
 		"mocha": "^3.2.0",
-		"chai": "^3.5.0",
-		"mochify": "^2.19.0",
+<% if (assertions === 'Chai') { %>		"chai": "^3.5.0",
+		"sinon-chai": "^2.8.0",
+<% } else { %>		"proclaim": "^3.4.4",
+<% } %>		"mochify": "^2.19.0",
+		"sinon": "^1.17.7",
 		"watchify": "^3.7.0"
 	},
 	"scripts": {
@@ -14,7 +17,7 @@
 		"phantom": "mochify",
 		"cover": "mochify --cover",
 		"test": "npm run phantom && npm run cover"
-	}<% if (useBabel) { %>,
+	}<% if (transpiler === 'babel') { %>,
 	"browserify": {
 		"transform": [["babelify", { "presets": ["latest"] }]]
 	}<% } %>
