@@ -1,4 +1,4 @@
-<% if (useBabel) { %>import <%= _.camelCase(componentName) %> from './src/js/<%= _.lowerCase(componentName) %>';
+<% if (useBabel) { %>import <%= _.camelCase(componentName) %> from './src/js/<%= componentName %>';
 
 const constructAll = () => {
   const <%= _.camelCase(componentName) %>Components = document.querySelectorAll('.<%= _.kebabCase(componentName) %>');

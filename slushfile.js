@@ -220,14 +220,17 @@ gulp.task('default', function (done) {
 		.pipe(rename(function (file) {
 			if (file.basename[0] === '_') { // Hidden files
 				file.basename = '.' + file.basename.slice(1);
-			} else if (file.basename === 'component.scss') { // Sass partial
-				file.basename = `${answers.componentName}.scss`;
-			} else if (file.basename === 'component.js') { // Main JS file
-				file.basename = `${answers.componentName}.js`;
-			} else if (file.basename === 'component.spec.js') { // Main JS spec file
-				file.basename = `${answers.componentName}.spec.js`;
+			} else if (file.basename === 'component' && file.extname === '.scss') { // Sass partial
+				file.basename = `_${answers.componentName}`;
+			} else if (file.basename === 'variables' && file.extname === '.scss') {
+				file.basename = '_variables';
+			} else if (file.basename === 'component' && file.extname === '.js') { // Main JS file
+				file.basename = `${answers.componentName}`;
+			} else if (file.basename === 'component.spec' && file.extname === '.js') { // Main JS spec file
+				file.basename = `${answers.componentName}.spec`;
 			} else if (file.basename === 'package_json') { // package.json so Atom stops complaining
-				file.basename = 'package.json';
+				file.basename = 'package';
+				file.extname = '.json';
 			}
 		}))
 		.pipe(conflict('./'))

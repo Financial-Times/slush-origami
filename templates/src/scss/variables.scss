@@ -1,0 +1,11 @@
+////
+/// @group <%= componentName %>
+/// @link http://registry.origami.ft.com/components/<%= componentName %>
+////
+
+/// Silent mode
+///
+/// @type Bool
+///
+/// @link http://origami.ft.com/docs/syntax/scss/#silent-styles "Silent" styles in Origami's documentation
+$<%= componentName %>-is-silent: true !default;
