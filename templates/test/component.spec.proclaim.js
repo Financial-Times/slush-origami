@@ -1,20 +1,19 @@
 import proclaim from 'proclaim';
 import sinon from 'sinon/pkg/sinon';
 import * as fixtures from './helpers/fixtures';
+import component from '../main';
 
-import <%= _.camelCase(componentName) %> from '../main';
-
-describe("<%= _.camelCase(componentName) %>", () => {
+describe('<%= style === "function" ? _.camelCase(componentName) : PascalCase(componentName) %>', () => {
 	it('is defined', () => {
-		proclaim.equal(typeof <%= _.camelCase(componentName) %>, 'function');
+		proclaim.equal(typeof component, 'function');
 	});
 
 	it('has a static init method', () => {
-		proclaim.equal(typeof <%= _.camelCase(componentName) %>.init, 'function');
+		proclaim.equal(typeof component.init, 'function');
 	});
 
-	it("should autoinitialize", (done) => {
-		const initSpy = sinon.spy(<%= _.camelCase(componentName) %>, 'init');
+	it('should autoinitialize', (done) => {
+		const initSpy = sinon.spy(component, 'init');
 		document.dispatchEvent(new CustomEvent('o.DOMContentLoaded'));
 		setTimeout(function(){
 			proclaim.equal(initSpy.called, true);
@@ -23,29 +22,29 @@ describe("<%= _.camelCase(componentName) %>", () => {
 		}, 100);
 	});
 
-	it("should not autoinitialize when the event is not dispached", () => {
-		const initSpy = sinon.spy(<%= _.camelCase(componentName) %>, 'init');
+	it('should not autoinitialize when the event is not dispached', () => {
+		const initSpy = sinon.spy(component, 'init');
 		proclaim.equal(initSpy.called, false);
 	});
 
-	describe("should create a new", () => {
+	describe('should create a new', () => {
 		beforeEach(() => {
-				fixtures.htmlCode();
+			fixtures.htmlCode();
 		});
 
 		afterEach(() => {
 			fixtures.reset();
 		});
 
-		it("component array when initialized", () => {
-			const boilerplate = <%= _.camelCase(componentName) %>.init();
+		it('returns a component array when initialized', () => {
+			const boilerplate = component.init();
 			proclaim.equal(boilerplate instanceof Array, true);
-			proclaim.equal(boilerplate[0] instanceof <%= _.camelCase(componentName) %>, true);
+			proclaim.equal(boilerplate[0] instanceof component, true);
 		});
 
-		it("single component when initialized with a root element", () => {
-			const boilerplate = <%= _.camelCase(componentName) %>.init('#element');
-			proclaim.equal(boilerplate instanceof <%= _.camelCase(componentName) %>, true);
+		it('returns a single component when initialized with a root element', () => {
+			const boilerplate = component.init('#element');
+			proclaim.equal(boilerplate instanceof component, true);
 		});
 	});
 });

@@ -5,23 +5,23 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import <%= _.camelCase(componentName) %> from '../main';
+import component from '../main';
 import * as fixtures from './helpers/fixtures';
 
 const should = chai.should();
 should.use(sinonChai);
 
-describe(('<%= componentName %>'), () => {
+describe('<%= style === "function" ? _.camelCase(componentName) : PascalCase(componentName) %>', () => {
 	it('is defined', () => {
-		should.exist(<%= _.camelCase(componentName) %>);
+		should.exist(component);
 	});
 
 	it('has a static init method', () => {
-		<%= _.camelCase(componentName) %>.init.should.be.a('function');
+		component.init.should.be.a('function');
 	});
 
 	it('should autoinitialize', (done) => {
-		const initSpy = sinon.spy(<%= _.camelCase(componentName) %>, 'init');
+		const initSpy = sinon.spy(component, 'init');
 		document.dispatchEvent(new CustomEvent('o.DOMContentLoaded'));
 		setTimeout(function(){
 			initSpy.should.have.been.called;
@@ -31,13 +31,13 @@ describe(('<%= componentName %>'), () => {
 	});
 
 	it('should not autoinitialize when the event is not dispached', () => {
-		const initSpy = sinon.spy(<%= _.camelCase(componentName) %>, 'init');
+		const initSpy = sinon.spy(component, 'init');
 		initSpy.should.not.have.been.called;
 	});
 
 	describe('should create a new', () => {
 		beforeEach(() => {
-				fixtures.htmlCode();
+			fixtures.htmlCode();
 		});
 
 		afterEach(() => {
@@ -45,14 +45,14 @@ describe(('<%= componentName %>'), () => {
 		});
 
 		it('component array when initialized', () => {
-			const <%= _.camelCase(componentName) %>Items = <%= _.camelCase(componentName) %>.init();
-			<%= _.camelCase(componentName) %>Items.should.be.an('array');
-			<%= _.camelCase(componentName) %>Items[0].should.be.an.instanceof(<%= _.camelCase(componentName) %>);
+			const componentItems = component.init();
+			componentItems.should.be.an('array');
+			componentItems[0].should.be.an.instanceof(component);
 		});
 
 		it('single component when initialized with a root element', () => {
-			const <%= _.camelCase(componentName) %>Item = <%= _.camelCase(componentName) %>.init('#element');
-			const <%= _.camelCase(componentName) %>Item.should.be.an.instanceof(<%= _.camelCase(componentName) %>);
+			const componentItem = component.init('#element');
+			componentItem.should.be.an.instanceof(component);
 		});
 	});
 });

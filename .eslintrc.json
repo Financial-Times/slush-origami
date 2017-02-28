@@ -8,7 +8,8 @@
 	"env": {
 		"es6": true,
 		"browser": true,
-		"node": true
+		"node": true,
+		"mocha": true
 	},
 	"rules": {
 		"no-unused-vars": 2,

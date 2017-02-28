@@ -16,6 +16,12 @@ const inquirer = require('inquirer');
 const path = require('path');
 const axios = require('axios');
 const _ = require('lodash/string');
+const plumber = require('gulp-plumber');
+const chalk = require('chalk');
+
+const error = chalk.bold.white.bgRed;
+const success = chalk.bold.white.bgGreen;
+const bold = chalk.bold.white;
 
 function format(string) {
 	const username = string.toLowerCase();
@@ -60,6 +66,14 @@ gulp.task('default', function (done) {
 		name: 'componentName',
 		message: 'What is the name of your component?',
 		default: defaults.componentName,
+		validate: answer => answer.match(/^[a-z]-[a-z-]+?[a-z]$/) ? true :
+			error('Invalid component name!\n') +
+			error('Should match regex: /^[a-z]-[a-z-]+?[a-z]$/') +
+			'\nThat is, something like...\n' +
+			bold('* o-grid\n') +
+			bold('* n-ui\n') +
+			bold('* g-audio\n') +
+			`You supplied: ${answer}`,
 	}, {
 		name: 'repoUrl',
 		message: 'What is the Git repo of the component?',
@@ -99,17 +113,20 @@ gulp.task('default', function (done) {
 			{
 				name: 'active',
 				value: 'active',
-				short: 'feature development ongoing, bug reports will be gratefully received and acted upon promptly',
+				short: 'feature development ongoing, bug reports will be gratefully received and acted upon'
+				+ ' promptly',
 			},
 			{
 				name: 'maintained',
 				value: 'maintained',
-				short: 'not actively developed but reproducible bugs will be fixed promptly and work done where necessary to maintain compatibility with browsers and other components',
+				short: 'not actively developed but reproducible bugs will be fixed promptly and work done '
+				+ 'where necessary to maintain compatibility with browsers and other components',
 			},
 			{
 				name: 'experimental',
 				value: 'experimental',
-				short: 'the component is not ready for production use. This was previously called "not implemented"',
+				short: 'the component is not ready for production use. This was previously called "not'
+				+ ' implemented"',
 			},
 		],
 		default: 'active',
@@ -148,6 +165,30 @@ gulp.task('default', function (done) {
 		default: true,
 		type: 'confirm',
 	}, {
+		name: 'style',
+		message: 'Which style of component do you want to scaffold?',
+		type: 'list',
+		default: 'function',
+		choices: [
+			{
+				name: 'Pure/stateless function',
+				value: 'function',
+				short: 'Easy to use, understand, extend; no classical inheritance',
+			},
+			// @TODO Investigate: is this useful? Desirable? Testable?
+			// {
+			// 	name: 'Higher-Order Component (HOC)',
+			// 	value: 'hoc',
+			// 	short: 'A functional component that decorates another component',
+			// },
+			{
+				name: 'ES6 Class',
+				value: 'class',
+				short: 'Standard empty class with constructors and classical inheritance',
+			},
+		],
+		when: ({ hasJs }) => hasJs,
+	}, {
 		name: 'transpiler',
 		message: 'Which transpiler do you want to use?',
 		type: 'list',
@@ -155,7 +196,7 @@ gulp.task('default', function (done) {
 			'Babel',
 			// 'TypeScript', // @TODO add TypeScript support
 		],
-		default: 'babel',
+		default: 'Babel',
 		when: ({ hasJs }) => hasJs,
 	}, {
 		name: 'assertions',
@@ -166,6 +207,25 @@ gulp.task('default', function (done) {
 			'Chai',
 			'Proclaim',
 		],
+		when: ({ hasJs }) => hasJs,
+	}, {
+		name: 'stack',
+		message: 'Which build/testing stack do you want?',
+		type: 'list',
+		default: 'webpack-karma-mocha',
+		choices: [
+			{
+				name: 'Webpack, with Karma and Mocha',
+				value: 'webpack-karma-mocha',
+				short: 'The standard as per o-component-boilerplate',
+			},
+			{
+				name: 'Browserify, with Mocha and Mochify',
+				value: 'browserify-mocha',
+				short: 'A bit lighter. Not guaranteed to work with anything! 😅',
+			},
+		],
+		when: ({ hasJs }) => hasJs,
 	}, {
 		name: 'hasMarkup',
 		message: 'Does your component need markup?',
@@ -204,52 +264,62 @@ gulp.task('default', function (done) {
 			return done();
 		}
 
-		if (!answers.componentName.match(/^[a-z]-[a-z-]+?[a-z]$/)) {
-			console.log('Invalid component name!');
-			console.log('Should match regex: /^[a-z]-[a-z-]+?[a-z]$/');
-			console.log('That is, something like...');
-			console.log('* o-grid');
-			console.log('* n-ui');
-			console.log('* g-audio');
-			console.log(`You supplied: ${answers.componentName}`);
-			console.log('Please re-run generator, supplying an appropriate name!');
-			return done();
-		}
-
 		gulp.src(__dirname + '/templates/**')
-		.pipe(template(answers, {
-			imports: {
-				_,
-			},
-		}))
+		.pipe(plumber())
 		.pipe(filter(file => {
-			// Filter tests
-			if (answers.assertions && file.basename.indexOf('.spec.') > -1) {
-				return file.basename.indexOf(answers.assertions.toLowerCase()) > -1;
-			} else if (!answers.assertions && file.path.indexOf('/test/') > -1) {
+			// Filter out JS and all testing stuff if no JS
+			if (!answers.hasJs && (file.path.indexOf('/test/') > -1 || file.extname === '.js')) {
 				return false;
+
+			// Filter out Sass if no Sass
+			} else if (!answers.hasSass && file.path.indexOf('/scss/') > -1) {
+				return false;
+
+			// Filter out wrong
+			} else if (answers.assertions && file.path.indexOf('.spec.') > -1) {
+				return file.path.indexOf(answers.assertions.toLowerCase()) > -1;
+
+			// Otherwise keep file
+			} else {
+				return true;
 			}
 		}))
 		.pipe(rename(function (file) {
-			if (file.basename[0] === '_') { // Hidden files
+			// Hidden files
+			if (file.basename[0] === '_') {
 				file.basename = '.' + file.basename.slice(1);
-			} else if (file.basename === 'component' && file.extname === '.scss') { // Sass partial
+
+			// Sass partials
+			} else if (file.basename === 'component' && file.extname === '.scss') {
 				file.basename = `_${answers.componentName}`;
 			} else if (file.basename === 'variables' && file.extname === '.scss') {
 				file.basename = '_variables';
-			} else if (file.basename === 'component' && file.extname === '.js') { // Main JS file
+
+			// Main JS file
+			} else if (file.basename === 'component' && file.extname === '.js') {
 				file.basename = `${answers.componentName}`;
-			} else if (file.basename === 'component.spec' && file.extname === '.js') { // Main JS spec file
+
+			// Main JS spec file
+			} else if (file.basename.match('component.spec') && file.extname === '.js') {
 				file.basename = `${answers.componentName}.spec`;
-			} else if (file.basename === 'package_json') { // package.json so Atom stops complaining
-				file.basename = 'package';
+
+			// package.json et al.
+			} else if (file.basename.match(/_json$/)) {
+				file.basename = file.basename.replace(/_json$/, '');
 				file.extname = '.json';
 			}
+		}))
+		.pipe(template(answers, {
+			imports: {
+				_,
+				PascalCase: s => _.upperFirst(_.camelCase(s)),
+			},
 		}))
 		.pipe(conflict('./'))
 		.pipe(gulp.dest('./'))
 		.pipe(install())
 		.on('end', function () {
+			console.log(success('Complete!'), '🎉');
 			done();
 		});
 	};

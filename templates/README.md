@@ -12,13 +12,11 @@ bower install --S <%= componentName %>
 <% if (hasJs) { %>
 Load the JS:
 
-```js<% if (useBabel) { %>
+```js<% if (transpiler === 'Babel') { %>
 import <%= _.camelCase(componentName) %> from '<%= componentName %>';
-<% } else { %>
-const <%= _.camelCase(componentName) %> = require('<%= componentName %>');
-<% } %><%= _.camelCase(componentName) %>.init();
-```
-<% } %><% if (hasSass) { %>
+<% } %>
+```<% } %>
+<% if (hasSass) { %>
 Load the CSS:
 
 ```scss
