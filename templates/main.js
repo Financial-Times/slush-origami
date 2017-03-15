@@ -1,7 +1,7 @@
 import <%= _.camelCase(componentName) %> from './src/js/<%= componentName %>';
 
 const constructAll = () => {
-	const <%= _.camelCase(componentName) %>Components = document.querySelectorAll('.<%= _.kebabCase(componentName) %>');
+	<%= _.camelCase(componentName) %>.init();
 
 	// Constructor code here
 

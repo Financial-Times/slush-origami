@@ -2,7 +2,7 @@
 * slush-origami
 * https://github.com/financial-times/slush-origami
 *
-* Copyright (c) 2017, Ændrew Rininsland, Financial Times
+* Copyright (c) 2017 Ændrew Rininsland, Financial Times
 * Licensed under the MIT license.
 */
 
@@ -22,11 +22,6 @@ const chalk = require('chalk');
 const error = chalk.bold.white.bgRed;
 const success = chalk.bold.white.bgGreen;
 const bold = chalk.bold.white;
-
-function format(string) {
-	const username = string.toLowerCase();
-	return username.replace(/\s/g, '');
-}
 
 const defaults = (function () {
 	const workingDirName = path.basename(process.cwd());
@@ -52,7 +47,10 @@ const defaults = (function () {
 
 	return {
 		componentName: workingDirName,
-		userName: osUserName || format(user.name || ''),
+		userName: osUserName || ((string) => {
+			const username = string.toLowerCase();
+			return username.replace(/\s/g, '');
+		})(user.name || ''),
 		authorName: user.name || '',
 		authorEmail: user.email || '',
 		repoUrl: `https://github.com/financial-times/${workingDirName}`,
@@ -110,24 +108,9 @@ gulp.task('default', function (done) {
 		message: 'What is the current support status?',
 		type: 'list',
 		choices: [
-			{
-				name: 'active',
-				value: 'active',
-				short: 'feature development ongoing, bug reports will be gratefully received and acted upon'
-				+ ' promptly',
-			},
-			{
-				name: 'maintained',
-				value: 'maintained',
-				short: 'not actively developed but reproducible bugs will be fixed promptly and work done '
-				+ 'where necessary to maintain compatibility with browsers and other components',
-			},
-			{
-				name: 'experimental',
-				value: 'experimental',
-				short: 'the component is not ready for production use. This was previously called "not'
-				+ ' implemented"',
-			},
+			'active',
+			'maintained',
+			'experimental',
 		],
 		default: 'active',
 	}, {
@@ -172,10 +155,10 @@ gulp.task('default', function (done) {
 		choices: [
 			{
 				name: 'Pure/stateless function',
+				short: 'Pure/stateless function',
 				value: 'function',
-				short: 'Easy to use, understand, extend; no classical inheritance',
 			},
-			// @TODO Investigate: is this useful? Desirable? Testable?
+			// // @TODO Investigate: is this useful? Desirable? Testable?
 			// {
 			// 	name: 'Higher-Order Component (HOC)',
 			// 	value: 'hoc',
@@ -183,8 +166,8 @@ gulp.task('default', function (done) {
 			// },
 			{
 				name: 'ES6 Class',
+				short: 'ES6 Class',
 				value: 'class',
-				short: 'Standard empty class with constructors and classical inheritance',
 			},
 		],
 		when: ({ hasJs }) => hasJs,
@@ -216,30 +199,16 @@ gulp.task('default', function (done) {
 		choices: [
 			{
 				name: 'Webpack, with Karma and Mocha',
+				short: 'Webpack, with Karma and Mocha',
 				value: 'webpack-karma-mocha',
-				short: 'The standard as per o-component-boilerplate',
 			},
 			{
 				name: 'Browserify, with Mocha and Mochify',
+				short: 'Browserify, with Mocha and Mochify',
 				value: 'browserify-mocha',
-				short: 'A bit lighter. Not guaranteed to work with anything! 😅',
 			},
 		],
 		when: ({ hasJs }) => hasJs,
-	}, {
-		name: 'hasMarkup',
-		message: 'Does your component need markup?',
-		default: true,
-		type: 'confirm',
-	}, {
-		name: 'markupLang',
-		message: 'Which markup dialect do you want to use for examples?',
-		type: 'list',
-		choices: [
-			'Nunjucks',
-			'Handlebars',
-		],
-		when: ({ hasMarkup }) => hasMarkup,
 	}, {
 		name: 'authorName',
 		message: 'What is the your name?',
@@ -275,9 +244,17 @@ gulp.task('default', function (done) {
 			} else if (!answers.hasSass && file.path.indexOf('/scss/') > -1) {
 				return false;
 
-			// Filter out wrong
+			// Filter out wrong JS files
+			} else if (answers.hasJs && file.path.indexOf('src/js/') > -1 ) {
+				return file.basename.indexOf(answers.style.toLowerCase()) > -1;
+
+			// Filter out wrong spec file
 			} else if (answers.assertions && file.path.indexOf('.spec.') > -1) {
-				return file.path.indexOf(answers.assertions.toLowerCase()) > -1;
+				return file.basename.indexOf(answers.assertions.toLowerCase()) > -1;
+
+			// Filter out karma.conf.js if using Babelify
+			} else if (!answers.stack === 'webpack-karma-mocha' && file.basename === 'karma.conf') {
+				return false;
 
 			// Otherwise keep file
 			} else {
