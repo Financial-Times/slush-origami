@@ -210,6 +210,11 @@ gulp.task('default', function (done) {
 		],
 		when: ({ hasJs }) => hasJs,
 	}, {
+		name: 'hasMarkup',
+		message: 'Does your component need markup?',
+		default: true,
+		type: 'confirm',
+	}, {
 		name: 'authorName',
 		message: 'What is the your name?',
 		default: defaults.authorName,
@@ -246,14 +251,14 @@ gulp.task('default', function (done) {
 
 			// Filter out wrong JS files
 			} else if (answers.hasJs && file.path.indexOf('src/js/') > -1 ) {
-				return file.basename.indexOf(answers.style.toLowerCase()) > -1;
+				return path.basename(file.path).indexOf(answers.style.toLowerCase()) > -1;
 
 			// Filter out wrong spec file
 			} else if (answers.assertions && file.path.indexOf('.spec.') > -1) {
-				return file.basename.indexOf(answers.assertions.toLowerCase()) > -1;
+				return path.basename(file.path).indexOf(answers.assertions.toLowerCase()) > -1;
 
 			// Filter out karma.conf.js if using Babelify
-			} else if (!answers.stack === 'webpack-karma-mocha' && file.basename === 'karma.conf') {
+			} else if (!answers.stack === 'webpack-karma-mocha' && path.basename(file.path) === 'karma.conf') {
 				return false;
 
 			// Otherwise keep file
