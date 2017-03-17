@@ -5,7 +5,7 @@ function <%= _.camelCase(componentName) %>(<%= _.camelCase(componentName) %>El, 
 	return this;
 };
 
-<%= _.camelCase(componentName) %>.init(rootEl, opts) {
+<%= _.camelCase(componentName) %>.init = (rootEl, opts) => {
 	if (!rootEl) {
 		rootEl = document.body;
 	}
@@ -17,6 +17,6 @@ function <%= _.camelCase(componentName) %>(<%= _.camelCase(componentName) %>El, 
 	}
 
 	return Array.from(rootEl.querySelectorAll('[data-o-component="<%= componentName %>"]'), rootEl => <%= _.camelCase(componentName) %>(rootEl, opts));
-}
+};
 
 export default <%= _.camelCase(componentName) %>;

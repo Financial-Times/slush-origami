@@ -3,6 +3,14 @@
 /// @link http://registry.origami.ft.com/components/<%= componentName %>
 ////
 
-@import 'o-icons/main';
-@import 'src/scss/<%= componentName %>';
+@import 'src/scss/mixins';
 @import 'src/scss/variables';
+
+@if ($<%= componentName %>-is-silent == false) {
+	 .<%= componentName %> {
+		display: block;
+	}
+
+	// Set to silent again to avoid being output twice
+	$<%= componentName %>-is-silent: true !global;
+}

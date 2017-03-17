@@ -250,13 +250,13 @@ gulp.task('default', function (done) {
 				file.basename = '.' + file.basename.slice(1);
 
 			// Sass partials
-			} else if (file.basename === 'component' && file.extname === '.scss') {
-				file.basename = `_${answers.componentName}`;
+			} else if (file.basename === 'mixins' && file.extname === '.scss') {
+				file.basename = `_mixins`;
 			} else if (file.basename === 'variables' && file.extname === '.scss') {
 				file.basename = '_variables';
 
 			// Main JS file
-			} else if (file.basename === 'component' && file.extname === '.js') {
+			} else if (file.basename.match('component') && file.extname === '.js') {
 				file.basename = `${answers.componentName}`;
 
 			// Main JS spec file
