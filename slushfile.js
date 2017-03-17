@@ -192,24 +192,6 @@ gulp.task('default', function (done) {
 		],
 		when: ({ hasJs }) => hasJs,
 	}, {
-		name: 'stack',
-		message: 'Which build/testing stack do you want?',
-		type: 'list',
-		default: 'webpack-karma-mocha',
-		choices: [
-			{
-				name: 'Webpack, with Karma and Mocha',
-				short: 'Webpack, with Karma and Mocha',
-				value: 'webpack-karma-mocha',
-			},
-			{
-				name: 'Browserify, with Mocha and Mochify',
-				short: 'Browserify, with Mocha and Mochify',
-				value: 'browserify-mocha',
-			},
-		],
-		when: ({ hasJs }) => hasJs,
-	}, {
 		name: 'hasMarkup',
 		message: 'Does your component need markup?',
 		default: true,
@@ -256,10 +238,6 @@ gulp.task('default', function (done) {
 			// Filter out wrong spec file
 			} else if (answers.assertions && file.path.indexOf('.spec.') > -1) {
 				return path.basename(file.path).indexOf(answers.assertions.toLowerCase()) > -1;
-
-			// Filter out karma.conf.js if using Babelify
-			} else if (!answers.stack === 'webpack-karma-mocha' && path.basename(file.path) === 'karma.conf') {
-				return false;
 
 			// Otherwise keep file
 			} else {
