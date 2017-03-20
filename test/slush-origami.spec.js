@@ -5,6 +5,7 @@
 const mockPrompt = require('./inquirer-prompt-fixture');
 const {
 	itHasCommonFiles,
+	itLacksCommonFiles,
 	itHasTests,
 	itLacksTests,
 	itHasSass,
@@ -14,7 +15,21 @@ const {
 } = require('./assertions');
 
 describe('~ Origami Slush generator ~', function () {
-	this.timeout(20000);
+	this.timeout(2000);
+
+	// NOTHING
+	describe('# Abort chosen', () => {
+		beforeEach(() => {
+			mockPrompt({
+				moveon: false,
+			});
+		});
+
+		it('does not scaffold common files', itLacksCommonFiles);
+		it('does not scaffold testing-related files', itLacksTests);
+		it('does not scaffold sass-related files', itLacksSass);
+		it('does not scaffold component JS', itLacksJs);
+	});
 
 	// EVERYTHING
 	describe('# JS + Sass + Markup', () => {

@@ -55,6 +55,14 @@ module.exports.itHasCommonFiles = done => {
 	});
 };
 
+module.exports.itLacksCommonFiles = done => {
+	gulp.start('default')
+	.once('task_stop', () => {
+		mockGulpDest.assertDestNotContains(commonFiles);
+		done();
+	});
+};
+
 module.exports.itHasTests = done => {
 	gulp.start('default')
 	.once('task_stop', () => {
