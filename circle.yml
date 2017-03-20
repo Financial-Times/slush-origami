@@ -10,7 +10,7 @@ test:
 deployment:
   release:
     tag: /v.*/
-    owner: financial-times
+    owner: Financial-Times
     commands:
       - npm-prepublish --verbose
       - npm publish --access public
