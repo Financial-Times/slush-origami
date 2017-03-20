@@ -15,7 +15,8 @@ const defaults = (function () {
 	let osUserName;
 	let user = {};
 
-	if (process.platform === 'win32') { /* istanbul ignore if  */
+	/* istanbul ignore if  */
+	if (process.platform === 'win32') {
 		homeDir = process.env.USERPROFILE;
 		osUserName = process.env.USERNAME || path.basename(homeDir).toLowerCase();
 	} else {
@@ -31,7 +32,7 @@ const defaults = (function () {
 
 	return {
 		componentName: workingDirName,
-		userName: osUserName || ((string) => { /* istanbul ignore next */
+		userName: osUserName || (/* istanbul ignore next */ (string) => {
 			const username = string.toLowerCase();
 			return username.replace(/\s/g, '');
 		})(user.name || ''),
@@ -65,7 +66,7 @@ module.exports = [
 		default: 'An origami component',
 		message: `What does this component do? Complete the following sentence:\n`
 		+ `"This is an Origami component..."`,
-		filter: v => v.replace(/\.$/, ''), // Remove trailing periods
+		filter: v => v.replace(/\.+$/, ''), // Remove trailing periods
 	}, {
 		name: 'componentType',
 		message: 'What type of component is it?',
@@ -108,7 +109,7 @@ module.exports = [
 		message: 'Please choose which browser features are *REQUIRED* from Polyfill.io\n``',
 		default: [],
 		type: 'checkbox',
-		choices: () => axios.get('https://cdn.polyfill.io/v2/assets/compat.json')
+		choices: /* istanbul ignore next */ () => axios.get('https://cdn.polyfill.io/v2/assets/compat.json')
 		.then(results => [
 			'default-3.6',
 			new Separator(),
@@ -119,7 +120,7 @@ module.exports = [
 		message: 'Please choose which browser features are *OPTIONAL* from Polyfill.io\n``',
 		default: [],
 		type: 'checkbox',
-		choices: () => axios.get('https://cdn.polyfill.io/v2/assets/compat.json')
+		choices: /* istanbul ignore next */ () => axios.get('https://cdn.polyfill.io/v2/assets/compat.json')
 		.then(results => [
 			'default-3.6',
 			new Separator(),
@@ -153,8 +154,8 @@ module.exports = [
 				name: 'ES6 Class',
 				value: 'class',
 			},
-		], /* istanbul ignore next */
-		when: ({ hasJs }) => hasJs,
+		],
+		when: /* istanbul ignore next */ ({ hasJs }) => hasJs,
 	}, {
 		name: 'transpiler',
 		message: 'Which transpiler do you want to use?',
@@ -163,8 +164,8 @@ module.exports = [
 			'Babel',
 			// 'TypeScript', // @TODO add TypeScript support
 		],
-		default: 'Babel', /* istanbul ignore next */
-		when: ({ hasJs }) => hasJs,
+		default: 'Babel',
+		when: /* istanbul ignore next */ ({ hasJs }) => hasJs,
 	}, {
 		name: 'assertions',
 		message: 'Which assertion library do you want to use?',
@@ -173,8 +174,8 @@ module.exports = [
 		choices: [
 			'Chai',
 			'Proclaim',
-		], /* istanbul ignore next */
-		when: ({ hasJs }) => hasJs,
+		],
+		when: /* istanbul ignore next */ ({ hasJs }) => hasJs,
 	}, {
 		name: 'hasMarkup',
 		message: 'Does your component need markup?',

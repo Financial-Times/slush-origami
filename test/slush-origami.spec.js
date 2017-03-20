@@ -3,6 +3,9 @@
  */
 
 const mockPrompt = require('./inquirer-prompt-fixture');
+const chai = require('chai');
+chai.should();
+
 const {
 	itHasCommonFiles,
 	itLacksCommonFiles,
@@ -14,8 +17,31 @@ const {
 	itLacksJs,
 } = require('./assertions');
 
+const prompts = require('../questions');
+
 describe('~ Origami Slush generator ~', function () {
 	this.timeout(2000);
+
+	describe('# Question validators and filters', () => {
+		describe('## Component name validator', () => {
+			it('validates one-letter, a hyphen, then kebab-case', () => {
+				prompts[0].validate('o-testing').should.equal(true);
+				prompts[0].validate('x-herpa-derpa').should.equal(true);
+			});
+
+			it('fails edge cases', () => {
+				prompts[0].validate('herpa-derpa').should.equal('\u001b[1m\u001b[37m\u001b[41mInvalid component name!\n\u001b[49m\u001b[39m\u001b[22m\u001b[1m\u001b[37m\u001b[41mShould match regex: /^[a-z]-[a-z-]+?[a-z]$/\u001b[49m\u001b[39m\u001b[22m\nThat is, something like...\n\u001b[1m\u001b[37m* o-grid\n\u001b[39m\u001b[22m\u001b[1m\u001b[37m* n-ui\n\u001b[39m\u001b[22m\u001b[1m\u001b[37m* g-audio\n\u001b[39m\u001b[22mYou supplied: herpa-derpa');
+				prompts[0].validate('o-testing-').should.equal('\u001b[1m\u001b[37m\u001b[41mInvalid component name!\n\u001b[49m\u001b[39m\u001b[22m\u001b[1m\u001b[37m\u001b[41mShould match regex: /^[a-z]-[a-z-]+?[a-z]$/\u001b[49m\u001b[39m\u001b[22m\nThat is, something like...\n\u001b[1m\u001b[37m* o-grid\n\u001b[39m\u001b[22m\u001b[1m\u001b[37m* n-ui\n\u001b[39m\u001b[22m\u001b[1m\u001b[37m* g-audio\n\u001b[39m\u001b[22mYou supplied: o-testing-');
+			});
+		});
+
+		describe('## Component description validator', () => {
+			it('trims trailing full-stops', () => {
+				prompts[2].filter('hey thurrr.').should.equal('hey thurrr');
+				prompts[2].filter('hai thurrr...').should.equal('hai thurrr');
+			});
+		});
+	});
 
 	// NOTHING
 	describe('# Abort chosen', () => {
