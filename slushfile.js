@@ -29,7 +29,7 @@ const defaults = (function () {
 	const workingDirName = path.basename(process.cwd());
 	let homeDir;
 	let osUserName;
-	let user;
+	let user = {};
 
 	if (process.platform === 'win32') {
 		homeDir = process.env.USERPROFILE;
@@ -41,10 +41,8 @@ const defaults = (function () {
 
 	const configFile = path.join(homeDir, '.gitconfig');
 
-	user = {};
-
 	if (require('fs').existsSync(configFile)) {
-		user = require('iniparser').parseSync(configFile).user;
+		user = require('iniparser').parseSync(configFile).user || {};
 	}
 
 	return {

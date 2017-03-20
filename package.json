@@ -21,7 +21,7 @@
     "npm": ">=1.4.3"
   },
   "scripts": {
-    "test": "NODE_ENV=test mocha --reporter=nyan test/**/*.spec.js",
+    "test": "NODE_ENV=test nyc --reporter=lcov --reporter=text mocha test/**/*.spec.js",
     "test:watch": "NODE_ENV=test mocha --reporter=nyan -w test/**/*.spec.js"
   },
   "dependencies": {

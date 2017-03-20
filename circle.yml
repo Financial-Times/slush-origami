@@ -4,6 +4,9 @@ machine:
 dependencies:
   pre:
     - echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" > ${HOME}/.npmrc
+test:
+  post:
+    - bash <(curl -s https://codecov.io/bash)
 deployment:
   release:
     tag: /v.*/
@@ -11,3 +14,6 @@ deployment:
     commands:
       - npm-prepublish --verbose
       - npm publish --access public
+general:
+  artifacts:
+    - coverage
