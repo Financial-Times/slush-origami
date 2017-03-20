@@ -12,6 +12,7 @@ const install = require('gulp-install');
 const conflict = require('gulp-conflict');
 const template = require('gulp-template');
 const rename = require('gulp-rename');
+const gulpif = require('gulp-if');
 const inquirer = require('inquirer');
 const path = require('path');
 const axios = require('axios');
@@ -20,8 +21,9 @@ const plumber = require('gulp-plumber');
 const chalk = require('chalk');
 
 const error = chalk.bold.white.bgRed;
-const success = chalk.bold.white.bgGreen;
 const bold = chalk.bold.white;
+
+const isTesting = process.env.NODE_ENV === 'test';
 
 const defaults = (function () {
 	const workingDirName = path.basename(process.cwd());
@@ -78,12 +80,14 @@ gulp.task('default', function (done) {
 		default: defaults.repoUrl,
 	},{
 		name: 'componentDescription',
+		default: 'An origami component',
 		message: `What does this component do? Complete the following sentence:\n`
 		+ `"This is an Origami component..."`,
 		filter: v => v.replace(/\.$/, ''), // Remove trailing periods
 	}, {
 		name: 'componentType',
 		message: 'What type of component is it?',
+		default: 'component',
 		type: 'list',
 		choices: [
 			'component',
@@ -120,6 +124,7 @@ gulp.task('default', function (done) {
 	}, {
 		name: 'browserFeaturesRequired',
 		message: 'Please choose which browser features are *REQUIRED* from Polyfill.io\n``',
+		default: [],
 		type: 'checkbox',
 		choices: () => axios.get('https://cdn.polyfill.io/v2/assets/compat.json')
 			.then(results => [
@@ -128,9 +133,10 @@ gulp.task('default', function (done) {
 				...Object.keys(results.data),
 			]),
 	}, {
- 	name: 'browserFeaturesOptional',
- 	message: 'Please choose which browser features are *OPTIONAL* from Polyfill.io\n``',
- 	type: 'checkbox',
+		name: 'browserFeaturesOptional',
+		message: 'Please choose which browser features are *OPTIONAL* from Polyfill.io\n``',
+		default: [],
+		type: 'checkbox',
 	 	choices: () => axios.get('https://cdn.polyfill.io/v2/assets/compat.json')
 	 		.then(results => [
 				'default-3.6',
@@ -155,18 +161,14 @@ gulp.task('default', function (done) {
 		choices: [
 			{
 				name: 'Pure/stateless function',
-				short: 'Pure/stateless function',
 				value: 'function',
 			},
-			// // @TODO Investigate: is this useful? Desirable? Testable?
 			{
-				name: 'Higher-Order Component (HOC)',
+				name: 'Higher-Order Component (HOC)', // @TODO Investigate: is this useful? Desirable? Testable?
 				value: 'hoc',
-				short: 'A functional component that decorates another component',
 			},
 			{
 				name: 'ES6 Class',
-				short: 'ES6 Class',
 				value: 'class',
 			},
 		],
@@ -224,15 +226,17 @@ gulp.task('default', function (done) {
 		.pipe(plumber())
 		.pipe(filter(file => {
 			// Filter out JS and all testing stuff if no JS
-			if (!answers.hasJs && (file.path.indexOf('/test/') > -1 || file.extname === '.js')) {
+			if (!answers.hasJs &&
+				(file.path.indexOf('/test/') > -1 || path.extname(file.path) === '.js')) {
 				return false;
 
 			// Filter out Sass if no Sass
-			} else if (!answers.hasSass && file.path.indexOf('/scss/') > -1) {
+			} else if (!answers.hasSass &&
+				(file.path.indexOf('/scss/') > -1 || path.extname(file.path) === '.scss')) {
 				return false;
 
 			// Filter out wrong JS files
-			} else if (answers.hasJs && file.path.indexOf('src/js/') > -1 ) {
+			} else if (answers.hasJs && file.path.indexOf('/src/js/') > -1 ) {
 				return path.basename(file.path).indexOf(answers.style.toLowerCase()) > -1;
 
 			// Filter out wrong spec file
@@ -275,13 +279,11 @@ gulp.task('default', function (done) {
 				PascalCase: s => _.upperFirst(_.camelCase(s)),
 			},
 		}))
-		.pipe(conflict('./'))
+		.pipe(conflict(isTesting ? '/tmp' : './'))
 		.pipe(gulp.dest('./'))
-		.pipe(install())
-		.on('end', function () {
-			console.log(success('Complete!'), '🎉');
-			done();
-		});
+		.pipe(gulpif(!isTesting, install()))
+		.on('data', () => {}) // No idea why this is needed for tests to pass
+		.on('end', done);
 	};
 
 	//Ask
