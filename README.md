@@ -1,4 +1,5 @@
-# Slush Origami [![Build status](https://circleci.com/gh/financial-times/slush-origami.svg?style=svg)](https://circleci.com/gh/financial-times/slush-origami)
+# Slush Origami [![CircleCI](https://circleci.com/gh/Financial-Times/slush-origami.svg?style=svg)](https://circleci.com/gh/Financial-Times/slush-origami)[![codecov](https://codecov.io/gh/Financial-Times/slush-origami/branch/master/graph/badge.svg)](https://codecov.io/gh/Financial-Times/slush-origami)
+
 
 > Slush generator for rapidly scaffolding Origami components
 
