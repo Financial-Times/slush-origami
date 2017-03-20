@@ -3,27 +3,17 @@
  */
 
 const mockPrompt = require('./inquirer-prompt-fixture');
+const {
+	itHasCommonFiles,
+} = require('./helpers');
+const uuid = require('uuid/v4');
 const gulp = require('gulp');
 const mockGulpDest = require('mock-gulp-dest')(gulp);
-const uuid = require('uuid/v4');
 
 process.env.NODE_ENV='test';
 
 require('../slushfile');
 
-const commonFiles = Object.freeze([ // These are files that are common across all tests
-	'demos/src/demo.mustache',
-	'demos/src/pa11y.mustache',
-	'.editorconfig',
-	'.eslintrc.json',
-	'.gitignore',
-	'.travis.yml',
-	'bower.json',
-	'circle.yml',
-	'CONTRIBUTING.md',
-	'origami.json',
-	'README.md',
-]);
 
 // WARNING -- this is a really big monolithic spec.
 // It's recommended to use code folding to make sense of it.
@@ -408,13 +398,7 @@ describe('Origami Slush generator', function () {
 			});
 		});
 
-		it('scaffolds out common files', done => {
-			gulp.start('default')
-			.once('task_stop', () => {
-				mockGulpDest.assertDestContains(commonFiles);
-				done();
-			});
-		});
+		it('scaffolds out common files', itHasCommonFiles);
 
 		it('does not scaffold testing-related files', done => {
 			gulp.start('default')
