@@ -21,7 +21,8 @@
     "npm": ">=1.4.3"
   },
   "scripts": {
-    "test": "echo \"No tests\""
+    "test": "mocha test/**/*.spec.js",
+		"test:watch": "mocha -w test/**/*.spec.js"
   },
   "dependencies": {
     "axios": "^0.15.3",
@@ -42,6 +43,11 @@
     "slushgenerator"
   ],
   "devDependencies": {
-    "npm-prepublish": "^1.2.2"
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "mock-gulp-dest": "^0.1.1",
+    "npm-prepublish": "^1.2.2",
+    "nyc": "^10.1.2",
+    "uuid": "^3.0.1"
   }
 }

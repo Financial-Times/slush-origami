@@ -159,11 +159,11 @@ gulp.task('default', function (done) {
 				value: 'function',
 			},
 			// // @TODO Investigate: is this useful? Desirable? Testable?
-			// {
-			// 	name: 'Higher-Order Component (HOC)',
-			// 	value: 'hoc',
-			// 	short: 'A functional component that decorates another component',
-			// },
+			{
+				name: 'Higher-Order Component (HOC)',
+				value: 'hoc',
+				short: 'A functional component that decorates another component',
+			},
 			{
 				name: 'ES6 Class',
 				short: 'ES6 Class',
@@ -255,13 +255,13 @@ gulp.task('default', function (done) {
 			} else if (file.basename === 'variables' && file.extname === '.scss') {
 				file.basename = '_variables';
 
-			// Main JS file
-			} else if (file.basename.match('component') && file.extname === '.js') {
-				file.basename = `${answers.componentName}`;
-
 			// Main JS spec file
 			} else if (file.basename.match('component.spec') && file.extname === '.js') {
 				file.basename = `${answers.componentName}.spec`;
+
+			// Main JS file
+			} else if (file.basename.match('component') && file.extname === '.js') {
+				file.basename = `${answers.componentName}`;
 
 			// package.json et al.
 			} else if (file.basename.match(/_json$/)) {
