@@ -85,7 +85,7 @@ module.exports = [
 	}, {
 		name: 'componentVersion',
 		message: 'What is the version of your component?',
-		default: '0.1.0',
+		default: '1.0.0-beta.1',
 	}, {
 		name: 'issuesUrl',
 		message: 'What is the support/issues URL?',
@@ -156,7 +156,7 @@ module.exports = [
 			},
 		],
 		when: /* istanbul ignore next: untestable */ ({ hasJs }) => hasJs,
-	}, {
+	}, /* { // @TODO re-enable and add TypeScript after adding TS to OBT.
 		name: 'transpiler',
 		message: 'Which transpiler do you want to use?',
 		type: 'list',
@@ -165,8 +165,8 @@ module.exports = [
 			// 'TypeScript', // @TODO add TypeScript support
 		],
 		default: 'Babel',
-		when: /* istanbul ignore next */ ({ hasJs }) => hasJs,
-	}, {
+		when: ({ hasJs }) => hasJs,
+	}, */ {
 		name: 'assertions',
 		message: 'Which assertion library do you want to use?',
 		type: 'list',
