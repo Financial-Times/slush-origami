@@ -9,7 +9,7 @@
 Install `slush-origami` globally:
 
 ```bash
-$ npm install -g slush-origami
+$ npm install -g @Financial-Times/slush-origami
 ```
 
 ### Usage
@@ -25,6 +25,14 @@ Run the generator from within the new folder:
 ```bash
 $ cd o-llama && slush origami
 ```
+
+## Features
+
+* Ability to scaffold with or without Sass or JS
+* Ability to scaffold ES6 classes, stateless components or higher-order components
+* Scaffolds unit tests when JavaScript is included
+* Choose your assertion library — Chai or Proclaim
+* Choose your polyfill service requirements from the scaffolder
 
 ## Getting To Know Slush
 

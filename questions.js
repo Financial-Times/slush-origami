@@ -32,7 +32,7 @@ const defaults = (function () {
 
 	return {
 		componentName: workingDirName,
-		userName: osUserName || (/* istanbul ignore next */ (string) => {
+		userName: osUserName || (/* istanbul ignore next: difficult to test */ (string) => {
 			const username = string.toLowerCase();
 			return username.replace(/\s/g, '');
 		})(user.name || ''),
@@ -109,7 +109,7 @@ module.exports = [
 		message: 'Please choose which browser features are *REQUIRED* from Polyfill.io\n``',
 		default: [],
 		type: 'checkbox',
-		choices: /* istanbul ignore next */ () => axios.get('https://cdn.polyfill.io/v2/assets/compat.json')
+		choices: /* istanbul ignore next: @TODO */ () => axios.get('https://cdn.polyfill.io/v2/assets/compat.json')
 		.then(results => [
 			'default-3.6',
 			new Separator(),
@@ -120,7 +120,7 @@ module.exports = [
 		message: 'Please choose which browser features are *OPTIONAL* from Polyfill.io\n``',
 		default: [],
 		type: 'checkbox',
-		choices: /* istanbul ignore next */ () => axios.get('https://cdn.polyfill.io/v2/assets/compat.json')
+		choices: /* istanbul ignore next: @TODO */ () => axios.get('https://cdn.polyfill.io/v2/assets/compat.json')
 		.then(results => [
 			'default-3.6',
 			new Separator(),
@@ -155,7 +155,7 @@ module.exports = [
 				value: 'class',
 			},
 		],
-		when: /* istanbul ignore next */ ({ hasJs }) => hasJs,
+		when: /* istanbul ignore next: untestable */ ({ hasJs }) => hasJs,
 	}, {
 		name: 'transpiler',
 		message: 'Which transpiler do you want to use?',
@@ -175,7 +175,7 @@ module.exports = [
 			'Chai',
 			'Proclaim',
 		],
-		when: /* istanbul ignore next */ ({ hasJs }) => hasJs,
+		when: /* istanbul ignore next: untestable */ ({ hasJs }) => hasJs,
 	}, {
 		name: 'hasMarkup',
 		message: 'Does your component need markup?',
